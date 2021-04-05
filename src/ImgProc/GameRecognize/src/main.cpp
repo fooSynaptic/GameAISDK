@@ -43,6 +43,7 @@ void Help(const char *strProgName)
     LOGE("The first is name of game, such as running / poker.");
 }
 
+
 // 输出参数解析
 bool ParseArg(int argc, char *argv[])
 {
@@ -78,6 +79,67 @@ bool ParseArg(int argc, char *argv[])
 }
 
 
+
+// 配置参数解析
+bool ParseFrameTol(int argc, char *argv[])
+{
+if (NULL == gs_poFramework)
+    {
+        LOGE("gs_poFramework is NULL, please check");
+        return false;
+    }
+
+    string frameTolString;
+    int frameTol = 0;
+    switch (argc)
+    {
+    case 1:
+        // 默认为SDK模式
+        LOGI("Run SDK Model");
+        break;
+
+    case 2:
+        if (strcmp(argv[1], "SDKTool") == 0)
+        {
+            gs_poFramework->SetTestMode(true, SDKTOOL_TEST);
+            LOGI("Run SDKTool Test Model");
+        }
+        else if (strcmp(argv[1], "video") == 0)
+        {
+            gs_poFramework->SetTestMode(true, VIDEO_TEST);
+            LOGI("Run VIDEO Test Model");
+        }
+        break;
+    case 3:
+        frameTolString = (string)argv[2];
+
+        for (auto chr: frameTolString)
+        {
+            frameTol = frameTol * 10 + chr - '0';
+        }
+
+        gs_poFramework->setFrameTol(frameTol);
+
+        if (strcmp(argv[1], "SDKTool") == 0)
+        {
+            gs_poFramework->SetTestMode(true, SDKTOOL_TEST);
+            LOGI("Run SDKTool Test Model");
+        }
+        else if (strcmp(argv[1], "video") == 0)
+        {
+            gs_poFramework->SetTestMode(true, VIDEO_TEST);
+            LOGI("Run VIDEO Test Model");
+        }
+        break;
+
+    default:
+        Help(argv[0]);
+        break;
+    }
+    return true;
+}
+
+
 int main(int argc, char *argv[])
 {
     // 获取环境变量"AI_SDK_PATH"
@@ -101,7 +163,8 @@ int main(int argc, char *argv[])
         // 初始化Framework
         if (0 == gs_poFramework->Initialize())
         {
-            ParseArg(argc, argv);
+            // ParseArg(argc, argv);
+            ParseFrameTol(argc, argv);
             signal(SIGUSR1, SigHandle);
             signal(SIGUSR2, SigHandle);
             signal(SIGINT, SigHandle);

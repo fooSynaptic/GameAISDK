@@ -15,6 +15,7 @@
 #include "UI/Src/Communicate/DataManager.h"
 #include "UI/Src/Communicate/PBMsgManager.h"
 #include "UI/Src/GameState/UIState.h"
+#include "UI/Src/UIReg/GameStartReg.h"
 
 
 class CUIFrameWork
@@ -133,6 +134,9 @@ private:
     bool LoadTaskConfig(const char *pszRootPath);
 private:
     CContext      *m_poCtx;
+    CGameStartReg      *statePredictReg;
+
+
     ETestMode     m_eRunMode;           // UI以哪种模式运行，SDK，Video，SDKTool
     CDataManager  *m_pDataMgr;
     CPBMsgManager *m_pMsgMgr;

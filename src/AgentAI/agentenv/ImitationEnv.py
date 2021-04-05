@@ -10,6 +10,7 @@ import os
 import sys
 
 import configparser
+import numpy as np
 import cv2
 
 from AgentAPI import AgentAPIMgr
@@ -119,6 +120,23 @@ class ImitationEnv(GameEnv):
                                  self.__timeMs,
                                  self.__frameIndex)
 
+    def GetState1(self):
+        """
+        Get game data , image and state
+        """
+        gameInfo = self._GetGameInfo()
+        image = gameInfo['image']
+        self.__frameIndex = gameInfo['frameSeq']
+        state = self.__gameState
+        img = image
+        img = cv2.resize(img, (self.__inputImgWidth, self.__inputImgHeight))
+        self.__isTerminal = True
+
+        if state == GAME_STATE_RUN:
+            self.__isTerminal = False
+
+        return img, self.__isTerminal
+
     def GetState(self):
         """
         Get game data , image and state
@@ -127,6 +145,12 @@ class ImitationEnv(GameEnv):
         image = gameInfo['image']
         self.__frameIndex = gameInfo['frameSeq']
         state = self.__gameState
+
+        #tmp = np.zeros([720,1280,3])
+        #image_cut = image[240:720, 110:1160]
+        #tmp[240:720, 110:1160] = image_cut
+        #img = tmp
+
         img = image
         img = cv2.resize(img, (self.__inputImgWidth, self.__inputImgHeight))
         self.__isTerminal = True

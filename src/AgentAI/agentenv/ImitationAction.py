@@ -83,6 +83,8 @@ class ImitationAction(object):
         """
         ratioX = imgWidth * 1. / self.cfgData['inputWidth']
         ratioY = imgHeight * 1. / self.cfgData['inputHeight']
+        
+        # cache action list
         actionIdList = list()
         if len(self.taskActionDict) == 1:
             actionIdList.append(actionIdListInput)
@@ -94,6 +96,9 @@ class ImitationAction(object):
         for ind, actionId in enumerate(actionIdList):
             if self.actionDefine is not None:
                 actionIdOriList = self.taskActionDict[ind][actionId]["actionIDGroup"]
+
+                # triple the action list
+                actionIdOriList += actionIdOriList + actionIdOriList + [1]
 
                 # if self.preAction[ind] == actionId:
                 #     continue
@@ -114,6 +119,7 @@ class ImitationAction(object):
 
             else:
                 self.logger.error('Should define actionDefine in imitationLearning.json')
+
 
     def DoSpecificAction(self, actionId, actionType, ratioX, ratioY, frameIndex):
         """

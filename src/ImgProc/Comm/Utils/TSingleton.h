@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <memory>
 
+
 /*!
    @class : TSingleton
    @brief : 实现对象实例全局唯一

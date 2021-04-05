@@ -18,6 +18,8 @@ CGameRegFrameWork::CGameRegFrameWork()
     m_bMultiResolution = true;
     m_bConnectAgent    = false;
     m_eTestMode        = SDK_TEST;
+
+    frameTol           = 9000;
 }
 
 CGameRegFrameWork::~CGameRegFrameWork()
@@ -176,6 +178,8 @@ int CGameRegFrameWork::RunForSDK()
     std::vector<CTaskMessage> oVecTaskMsg;
     ESendTaskReportToMC       eSendTaskReportToMC = SEND_NO;
 
+    bool                      flag = false;
+
     while (!m_bExited)
     {
         tagSrcImgInfo stSrcImageInfo;
@@ -190,9 +194,36 @@ int CGameRegFrameWork::RunForSDK()
             bIdle = false;
         }
 
+        // if (stSrcImageInfo.oSrcImage.cols > 0 && stSrcImageInfo.oSrcImage.rows > 0)
+        // {
+        //     LOGI("recv image from mc width %d, height %d", stSrcImageInfo.oSrcImage.cols, stSrcImageInfo.oSrcImage.rows);
+        //     flag = true;
+        // }
+        // else if (flag)
+        // {
+        //     frameTol --;
+        //     // flag = flag ^ true;
+        // }
+
+        // if (frameTol == 0) m_bExited = true;
+
         if (stSrcImageInfo.oSrcImage.cols > 0 && stSrcImageInfo.oSrcImage.rows > 0)
         {
             LOGI("recv image from mc width %d, height %d", stSrcImageInfo.oSrcImage.cols, stSrcImageInfo.oSrcImage.rows);
+            flag = true;
+            frameTol = 200;
+        }
+        else if (flag)
+        {
+            frameTol--;
+            
+            LOGI("tol:%d", frameTol);
+            if (frameTol < 0) 
+            {
+                m_bExited = true;
+                flag = !flag;
+                break;
+            }
         }
 
         // 任务管理模块更新
@@ -1030,4 +1061,10 @@ void CGameRegFrameWork::SetTestMode(bool bDebug, ETestMode eTestMode)
     m_eTestMode = eTestMode;
     m_oTaskManager.SetTestMode(bDebug, eTestMode);
 }
+
+void CGameRegFrameWork::setFrameTol(int frameTol)
+{
+    frameTol = frameTol;
+}
+
 /*! @} */

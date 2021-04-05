@@ -9,12 +9,14 @@
 
 #include "UI/Src/Action/Action.h"
 class CContext;
+
 class CUIState
 {
 public:
     CUIState() {}
     virtual ~CUIState() {}
     virtual void Handle(const tagFrameContext &stFrameCtx, CContext *pContext) = 0;
+    virtual int Handle(const tagFrameContext &stFrameCtx, CContext *pContext, int getState) = 0;
 };
 
 
@@ -36,6 +38,12 @@ public:
     void Process(const tagFrameContext &stFrameCtx)
     {
         m_pState->Handle(stFrameCtx, this);
+    };
+
+    int Process(const tagFrameContext &stFrameCtx, int return_state = 1)
+    {
+        int ret = m_pState->Handle(stFrameCtx, this, return_state);
+        return ret;
     };
 
     /*!

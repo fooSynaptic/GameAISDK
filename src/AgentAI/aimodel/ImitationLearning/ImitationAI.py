@@ -110,6 +110,7 @@ class ImitationAI(AIModel):
 
         self.__timeCheckAI = time.time()
 
+        # get image info from agent env
         image, _ = self.agentEnv.GetState()
 
         if self.useLstm is False:

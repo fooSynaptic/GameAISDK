@@ -59,6 +59,11 @@ public:
      */
     void SetTestMode(bool bDebug, ETestMode eTestMode);
 
+    /*!
+     * @brief 设置frameTol
+     */
+    void setFrameTol(int frameTol);
+
 private:
     /*!
      * @brief run for SDK
@@ -185,6 +190,7 @@ private:
     bool m_bMultiResolution;
     bool m_bConnectAgent;
     ETestMode m_eTestMode;               // GameReg以哪种模式运行，SDK，Video，SDKTool
+    int frameTol;                        // frame switch 容忍变化次数
 };
 
 #endif // GAMEREG_FRAMEWORK_H_

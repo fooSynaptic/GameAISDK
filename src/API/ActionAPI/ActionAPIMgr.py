@@ -149,6 +149,7 @@ class ActionAPIMgr(object):
 
         self.__actionMgr.Down(px, py, contact=contact, frameSeq=frameSeq, waitTime=waitTime)
 
+    # no concat on screen
     def Up(self, contact=0, frameSeq=-1, waitTime=0):
         """
         Up the contact.

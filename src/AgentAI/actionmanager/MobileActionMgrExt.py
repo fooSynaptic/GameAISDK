@@ -7,6 +7,7 @@ Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 
 import logging
 import math
+import random
 
 from .ActionMgr import ActionMgr
 
@@ -169,7 +170,7 @@ class MobileActionMgrExt(object):
             return True
         return False
 
-    def Click(self, px, py, contact=0, frameSeq=-1, durationMS=-1):
+    def Click1(self, px, py, contact=0, frameSeq=-1, durationMS=-1):
         """
         Click the target point(px, py) on contact. Just Down the point and wait for durationMS
         and then Up.
@@ -200,6 +201,65 @@ class MobileActionMgrExt(object):
             self.__contactPoints[contact] = None
             return True
         return False
+
+    def Click(self, px, py, contact=0, frameSeq=-1, durationMS=-1):
+        """
+        Click the target point(px, py) on contact. Just Down the point and wait for durationMS
+        and then Up.
+        :param px: x of target point
+        :param py: y of target point
+        :param contact: contact index(0, 1, ..., 9)
+        :param frameSeq: the frame sequence, default is -1
+        :param durationMS: the duration time(ms) in this process
+        :return:
+        """
+        actionData = self._SinglePointOp(px=px, py=py, contact=contact, during_time=durationMS)
+        actionData['img_id'] = frameSeq
+
+        if durationMS < 0:
+            LOG.debug('send frame data, frameIndex={3}'
+                      ' Click ({0}, {1}) contact={2}'.format(px, py,
+                                                             contact,
+                                                             frameSeq))
+        else:
+            LOG.debug('send frame data, frameIndex={3}'
+                      ' Click ({0}, {1}) {4}ms contact={2}'.format(px, py,
+                                                                   contact,
+                                                                   frameSeq,
+                                                                   durationMS))
+        ret = None
+        # if random.random() < 0.4:
+        #     ret = self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=actionData,
+        #                                       frameSeq=frameSeq)
+        # else:
+        #     # 添加射击按钮
+        #     fire_action = self._SinglePointOp(px=591, py=306, contact=0, during_time=1000)
+        #     ret = self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=fire_action,
+        #                                       frameSeq=frameSeq)
+        ret = self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=actionData,
+                                              frameSeq=frameSeq)
+        import random;import sys
+        if random.random() > 0.1:
+            print('1');#sys.exit()
+            # 添加射击按钮
+            fire_action = self._SinglePointOp(px=1137, py=573, contact=0, during_time=1000)
+            self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=fire_action,
+                                              frameSeq=frameSeq)
+        else:
+            if random.random()>0.5:
+                left_action = self._SinglePointOp(px=23, py=517, contact=0, during_time=1000)
+                self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=left_action,
+                                                  frameSeq=frameSeq)
+            else:
+                right_action = self._SinglePointOp(px=200, py=518, contact=0, during_time=1000)
+                self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=right_action,
+                                                  frameSeq=frameSeq)
+
+        if ret:
+            self.__contactPoints[contact] = None
+            return True
+        return False
+
 
     def Down(self, px, py, contact=0, frameSeq=-1, waitTime=0):
         """

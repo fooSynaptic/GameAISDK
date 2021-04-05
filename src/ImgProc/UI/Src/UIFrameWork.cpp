@@ -84,6 +84,7 @@ CUIFrameWork::CUIFrameWork()
     memset(m_szVideoPath, 0, sizeof(m_szVideoPath));
 
     m_poCtx     = NULL;
+    statePredictReg   = NULL;     // 检查predict的结果
     m_nFrameCnt = -1;
     // 默认为运行AI SDK模式
     m_eRunMode = SDK_TEST;
@@ -101,6 +102,8 @@ CUIFrameWork::~CUIFrameWork()
     {
         delete m_poCtx;
         m_poCtx = NULL;
+        delete statePredictReg;
+        statePredictReg = NULL;
     }
 }
 
@@ -165,6 +168,7 @@ bool CUIFrameWork::Initialize(const char *pszRootPath)
 
     // Context 初始维护的状态为大厅状态
     m_poCtx = new CContext(CHallState::getInstance());
+    statePredictReg = new CGameStartReg();
     return true;
 }
 
@@ -230,7 +234,30 @@ int CUIFrameWork::Run()
         LOGI("recv frame data, frameIndex=%d", stFrameCtx.nFrameSeq);
 
         // 处理图像帧，并在其内部维护状态的改变
-        m_poCtx->Process(stFrameCtx);
+        int ret = m_poCtx->Process(stFrameCtx, 1);
+
+
+        // /*!
+        // * @brief　检测处理输入图像数据
+        // * @param[in] stFrameCtx: 输入帧信息
+        // * @param[out] stUIRegRst:　输出结果
+        // * @return -1 表示失败，否则返回匹配到的UI的ID
+        // */
+        // // virtual int Predict(const tagFrameContext &stFrameCtx, tagUIRegResult &stUIRegRst);
+        
+        // tagUIRegResult null_trivial;
+        // int stateIndex = statePredictReg->Predict(stFrameCtx, null_trivial);
+        // LOGI("======================= stateIndex predict status: %d", stateIndex);
+
+        // if (stateIndex == 10) g_bExit = true;
+        if (ret == 1) 
+        {
+            g_bExit = true;
+            LOGE("get exit state, sys exit ...");
+            exit(0);
+            // return -1;
+        }
+
     }
 
     // 向MC反注册

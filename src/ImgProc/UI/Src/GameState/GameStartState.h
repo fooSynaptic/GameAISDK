@@ -23,6 +23,7 @@ public:
      * @param[in] pContext
      */
     virtual void Handle(const tagFrameContext &stFrameCtx, CContext *pContext);
+    virtual int Handle(const tagFrameContext &stFrameCtx, CContext *pContext, int getState);
 };
 
 #endif // GAME_START_STATE_H_

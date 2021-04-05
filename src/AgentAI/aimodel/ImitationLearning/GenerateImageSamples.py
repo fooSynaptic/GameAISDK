@@ -218,6 +218,11 @@ class GenerateImageSamples(object):
             image = cv2.imread(imageNameList[n])
             label = actionList[n + self.actionAheadNum]
 
+            tmp = np.zeros([360,640,3])
+            image_cut = image[120:360, 55:580]
+            tmp[120:360, 55:580] = image_cut
+            image = tmp
+
             if self.roiRegion is not None:
                 image = image[self.roiRegion[1]: self.roiRegion[1] + self.roiRegion[3],
                               self.roiRegion[0]: self.roiRegion[0] + self.roiRegion[2], :]
